@@ -4,6 +4,7 @@ require_once 'vendor/autoload.php';
 use app\database\Connection;
 use Dotenv\Dotenv;
 use app\database\model\Products;
+use app\database\model\MakePdf;
 
 $path = dirname(__FILE__, 1);
 $dotenv = Dotenv::createUnsafeImmutable($path);
@@ -32,13 +33,13 @@ if (isset($_POST['adicionar'])) {
     }
 }
 
-$mapaProdutos = [];
-foreach ($products as $produto) {
-    $mapaProdutos[$produto->codigo_interno] = $produto;
+$mapProducts = [];
+foreach ($products as $prod) {
+    $mapProducts[$prod->codigo_interno] = $prod;
 }
 
-$productsSelected = array_map(function ($codigo) use ($mapaProdutos) {
-    return $mapaProdutos[$codigo] ?? null;
+$productsSelected = array_map(function ($codigo) use ($mapProducts) {
+    return $mapProducts[$codigo] ?? null;
 }, $_SESSION['selecionados']);
 
 $productsSelected = array_filter($productsSelected);
@@ -49,7 +50,7 @@ if (isset($_POST['deletar_selecao'])) {
 }
 
 if (isset($_POST['imprimir_todos'])) {
-    echo 'acionou ' . $_POST['imprimir_todos'] . '<hr/>';
+    MakePdf::makePdfByProducts($productsSelected);
 }
 ?>
 
