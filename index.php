@@ -2,11 +2,10 @@
 require_once 'vendor/autoload.php';
 
 use app\database\Connection;
-use \Dotenv\Dotenv;
+use Dotenv\Dotenv;
 use app\database\model\Products;
 
 $path = dirname(__FILE__, 1);
-
 $dotenv = Dotenv::createUnsafeImmutable($path);
 $dotenv->load();
 
@@ -19,6 +18,39 @@ else:
     $search = '';
     $products = $productDao->getProducts(Connection::getConn());
 endif;
+
+session_start();
+
+if (!isset($_SESSION['selecionados'])) {
+    $_SESSION['selecionados'] = [];
+}
+
+if (isset($_POST['adicionar'])) {
+    $id = (int) $_POST['adicionar'];
+    if (!in_array($id, $_SESSION['selecionados'], true)) {
+        $_SESSION['selecionados'][] = $id;
+    }
+}
+
+$mapaProdutos = [];
+foreach ($products as $produto) {
+    $mapaProdutos[$produto->codigo_interno] = $produto;
+}
+
+$productsSelected = array_map(function ($codigo) use ($mapaProdutos) {
+    return $mapaProdutos[$codigo] ?? null;
+}, $_SESSION['selecionados']);
+
+$productsSelected = array_filter($productsSelected);
+
+if (isset($_POST['deletar_selecao'])) {
+    session_unset();
+    $productsSelected = [];
+}
+
+if (isset($_POST['imprimir_todos'])) {
+    echo 'acionou ' . $_POST['imprimir_todos'] . '<hr/>';
+}
 ?>
 
 <!DOCTYPE html>
@@ -64,7 +96,7 @@ endif;
                                     <td><?= $product->descricao ?></td>
                                     <td><?= $product->codigo_interno ?></td>
                                     <td>
-                                        <form action="<?= $_SERVER['PHP_SELF'].'?search='.$search?>" method="post">
+                                        <form action="<?= $_SERVER['PHP_SELF'] . '?search=' . $search ?>" method="post">
                                             <button type="submit" name="adicionar" value="<?= $product->codigo_interno ?>"
                                                 class="btn btn-secondary">Adicionnar</button>
                                         </form>
@@ -75,6 +107,57 @@ endif;
 
                     </table>
                 </div>
+            </div>
+            <div class="d-flex card container p-2 justify-content-center align-items-center ">
+                <div
+                    class="d-flex flex-column justify-content-center align-items-center px-auto border rounded  p-4 gap-4">
+                    <h2 class="display-4">Fila de impressao</h2>
+                    <div class="d-flex ">
+                        <form action="" method="post">
+                            <input type="submit" name="imprimir_todos" value="Imprimir todos" class="btn btn-primary" />
+                            <input type="submit" name="deletar_selecao" value="Limpar impressões"
+                                class="btn btn-secondary" />
+                        </form>
+                    </div>
+                </div>
+                <table class="table table-striped align-middle ">
+                    <thead>
+                        <tr>
+                            <th>EAN</th>
+                            <th>Descrição</th>
+                            <th>Cód. interno</th>
+                            <th>Ações</th>
+                        </tr>
+
+                    </thead>
+                    <tbody class="table-group-divider">
+                        <?php if (!empty($productsSelected)): ?>
+                            <?php foreach ($productsSelected as $product): ?>
+                                <tr id="<?= $product->codigo_interno ?>">
+                                    <td><?= $product->EAN ?></td>
+                                    <td><?= $product->descricao ?></td>
+                                    <td><?= $product->codigo_interno ?></td>
+                                    <td>
+                                        <form action="" method="post">
+                                            <button type="submit" name="imprimir" value="<?= $product->codigo_interno ?>"
+                                                class="btn btn-secondary">Imprimir</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr id="-1">
+                                <td>--</td>
+                                <td>--</td>
+                                <td>--</td>
+                                <td>
+                                    --
+                                </td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+
+                </table>
             </div>
         </section>
     </main>
