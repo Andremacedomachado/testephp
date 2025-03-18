@@ -33,16 +33,9 @@ if (isset($_POST['adicionar'])) {
     }
 }
 
-$mapProducts = [];
-foreach ($products as $prod) {
-    $mapProducts[$prod->codigo_interno] = $prod;
-}
 
-$productsSelected = array_map(function ($codigo) use ($mapProducts) {
-    return $mapProducts[$codigo] ?? null;
-}, $_SESSION['selecionados']);
 
-$productsSelected = array_filter($productsSelected);
+$productsSelected = $productDao->filterProductsByCod($products,$_SESSION['selecionados']);
 
 if (isset($_POST['deletar_selecao'])) {
     session_unset();
@@ -51,6 +44,14 @@ if (isset($_POST['deletar_selecao'])) {
 
 if (isset($_POST['imprimir_todos'])) {
     MakePdf::makePdfByProducts($productsSelected);
+}
+
+if (isset($_POST['imprimir']) && !empty($productsSelected)) {
+    $idProduct[] = (int) $_POST['imprimir'];
+
+    $productSelected  = $productDao->filterProductsByCod($productsSelected, $idProduct);
+
+    MakePdf::makePdfByProducts($productSelected);
 }
 ?>
 

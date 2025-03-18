@@ -35,5 +35,21 @@ class Products
             var_dump($e->getMessage());
         }
     }
+
+    public function filterProductsByCod($products,$cods)
+    {
+        $mapProducts = [];
+        foreach ($products as $prod) {
+            $mapProducts[$prod->codigo_interno] = $prod;
+        }
+    
+        $productsSelected = array_map(function ($cod) use ($mapProducts) {
+            return $mapProducts[$cod] ?? null;
+        }, $cods);
+    
+        $productsSelected = array_filter($productsSelected);
+    
+        return $productsSelected;
+    }
 }
 ?>
