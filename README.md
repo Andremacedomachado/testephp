@@ -16,8 +16,8 @@ Este projeto é um teste básico utilizando PHP, abordando conceitos fundamentai
 
 Para executar este projeto, é necessário ter as seguintes ferramentas instaladas:
 
-* Um ambiente `AMP` de sua preferência (exemplo: XAMPP, WAMP, MAMP) para hospedar localmente o servidor e utilizar o banco de dados MySQL.
-* O `Composer` para instalar as dependências com base no arquivo `composer.json`.
+* Um ambiente `AMP` de sua preferência (exemplo: [XAMPP](https://www.apachefriends.org/pt_br/download.html), [WAMP](https://www.wampserver.com/en/download-wampserver-64bits/), [MAMP](https://www.mamp.info/en/downloads/)) para hospedar localmente o servidor e utilizar o banco de dados MySQL.
+* O `Composer` para instalar as dependências com base no arquivo `composer.json`.([link de referencia](https://getcomposer.org/download/)).
 
 ---
 
@@ -65,11 +65,19 @@ Para popular a tabela com alguns produtos de exemplo, execute a seguinte consult
 ```sql
 INSERT INTO `products` (`EAN`, `codigo_interno`, `descricao`, `imagem`) VALUES
 (7894900011517, 1, 'REFRIGERANTE COCA-COLA GARRAFA 2L', 'http://localhost/testephp.com.br/public/7894900011517.jfif'),
-(7891000002643, 2, 'LEITE EM PÓ NINHO INSTANTÂNEO', 'http://localhost/testephp.com.br/public/7894900011517.jfif'),
-(7896102501995, 3, 'EXTRATO DE TOMATE QUERO EXTRATO+ SACHÊ 300G', 'http://localhost/testephp.com.br/public/7896102501995.jfif'),
+(7891000002643, 2, 'LEITE EM PÓ NINHO INSTANTÂNEO', 'http://localhost/testephp.com.br/public/7891000002643.jfif'),
+(7896102501995, 3, 'EXTRATO DE TOMATE QUERO EXTRATO+ SACHÊ 300GO', 'http://localhost/testephp.com.br/public/7896102501995.png'),
 (7898375930571, 4, 'ALFACE CRESPA', 'http://localhost/testephp.com.br/public/7898375930571.jfif'),
 (7896276060021, 5, 'ARROZ AGULHINHA ARROZAL T1 5KG', 'http://localhost/testephp.com.br/public/7896276060021.jfif');
 ```
+
+### 4. Importação das Imagens dos Produtos  
+
+Para baixar as imagens, acesse o [site da Cosmo Bluesoft](https://cosmos.bluesoft.com.br/produtos) e busque os produtos pelo código `EAN`.  
+
+Em seguida, salve as imagens na pasta `public` do projeto.  
+
+> **Observação:** É necessário criar a pasta `public`, pois ela está listada no `.gitignore` e não será incluída no repositório automaticamente. 
 
 ---
 
