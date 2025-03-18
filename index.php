@@ -27,15 +27,13 @@ if (!isset($_SESSION['selecionados'])) {
 }
 
 if (isset($_POST['adicionar'])) {
-    $id = (int) $_POST['adicionar'];
+    $id[] = (int) $_POST['adicionar'];
     if (!in_array($id, $_SESSION['selecionados'], true)) {
-        $_SESSION['selecionados'][] = $id;
+        $_SESSION['selecionados'][] = $productDao->filterProductsByCod($products, $id)[0];
     }
 }
 
-
-
-$productsSelected = $productDao->filterProductsByCod($products,$_SESSION['selecionados']);
+$productsSelected = $_SESSION['selecionados'];
 
 if (isset($_POST['deletar_selecao'])) {
     session_unset();
